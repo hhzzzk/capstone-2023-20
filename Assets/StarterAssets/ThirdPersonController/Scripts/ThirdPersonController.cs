@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Cinemachine;
+using Photon.Pun;
+using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
 #endif
@@ -103,13 +105,14 @@ namespace StarterAssets
         private int _animIDMotionSpeed;
         private int _animIDInvestigate;
 
-#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
+#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED 
         private PlayerInput _playerInput;
 #endif
         private Animator _animator;
         private CharacterController _controller;
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
+        private PhotonView pv;
 
         private const float _threshold = 0.01f;
 
@@ -131,20 +134,24 @@ namespace StarterAssets
 
         private void Awake()
         {
+            
+        }
+
+        private void Start()
+        {
             // get a reference to our main camera
             if (_mainCamera == null)
             {
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
-        }
-
-        private void Start()
-        {
+            Debug.Log(_mainCamera.name);
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
             
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
+            pv = GetComponent<PhotonView>();
+    
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
             _playerInput = GetComponent<PlayerInput>();
             PlayerController = GetComponent<ThirdPlayerController>();
@@ -163,11 +170,15 @@ namespace StarterAssets
         {
             _hasAnimator = TryGetComponent(out _animator);
 
-            Investigate();
-            if (!InvestigateValue)
-                Move();
-            JumpAndGravity();
-            GroundedCheck();
+            if (pv.IsMine)
+            {
+                Investigate();
+                if (!InvestigateValue)
+                    Move();
+                JumpAndGravity();
+                GroundedCheck();
+            }
+            
 
         }
 
@@ -269,6 +280,10 @@ namespace StarterAssets
 
             if (_input.move != Vector2.zero)
             {
+                if (_mainCamera == null)
+                {
+                    _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+                }
                 _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
                                     _mainCamera.transform.eulerAngles.y;
                 float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
