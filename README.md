@@ -11,7 +11,7 @@
 
 ### 2. 소개 영상
 [Gameplay Trailer](https://www.youtube.com/watch?v=A92wvyZtpd4)
-
+[INTRO](https://youtu.be/1cXLZ19x33E)
 ### 3. 인게임 사진
 <img src="https://github.com/kookmin-sw/capstone-2023-20/assets/31495131/81a27ba2-341f-4282-ad07-efef125b53e1"  width="300" height="150">
 <img src="https://github.com/kookmin-sw/capstone-2023-20/assets/31495131/42ae5e10-6a52-40b1-94bc-fffe1f7d9f88"  width="300" height="150">
